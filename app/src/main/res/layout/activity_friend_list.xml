@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.arexnt.gpsdemo.FriendList">
+
     <ImageView
         android:id="@+id/friendListHeader"
         android:layout_width="wrap_content"
@@ -29,8 +30,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/friendListHeader"
-        android:layout_above="@id/friendListFooter">
+        android:layout_below="@+id/friendListHeader"
+        android:layout_above="@+id/friendListFooter">
         <ListView
             android:id="@+id/friendListView"
             android:layout_width="wrap_content"

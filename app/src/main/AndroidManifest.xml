@@ -57,8 +57,22 @@
             </intent-filter>
         </activity>
         <activity android:name=".FriendList">
+            <intent-filter>
+                <action android:name="start.FriendList"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
         </activity>
         <activity android:name=".EnemyList">
+            <intent-filter>
+                <action android:name="start.EnemyList"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".dialogMapView" android:theme="@style/Theme.AppCompat.Light.Dialog">
+            <intent-filter>
+                <action android:name="start.dialogMapView"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
         </activity>
     </application>
 

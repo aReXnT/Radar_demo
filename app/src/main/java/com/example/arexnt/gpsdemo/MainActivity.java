@@ -1,5 +1,6 @@
 package com.example.arexnt.gpsdemo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v7.app.AppCompatActivity;
@@ -32,8 +33,11 @@ public class MainActivity extends AppCompatActivity    {
     BaiduMap mBaiduMap;
     public LocationClient mLocationClient = null;
     BitmapDescriptor mCurrentMarker;
+//    private Intent friendListIntent;
+//    private Intent enemyListIntent;
     private Button btnLocate;
     private Button btnRefesh;
+
     public MyLocationListenner myListener = new MyLocationListenner();
     boolean isFirstLoc = true;// 是否首次定位
 
@@ -85,7 +89,7 @@ public class MainActivity extends AppCompatActivity    {
             public void onClick(View v) {
                 switch (v.getId()){
                     case R.id.btn_refresh:
-                        Log.i("OnClickEvent","btn_refresh");
+
                         btnRefesh = (Button) findViewById(R.id.btn_refresh);
                         final ImageView scanCover = (ImageView) findViewById(R.id.scanCover);
                         final ImageView radarSweep = (ImageView) findViewById(R.id.radarSweep);
@@ -123,11 +127,11 @@ public class MainActivity extends AppCompatActivity    {
                         break;
 
                     case R.id.btn_locate:
-                        Log.i("OnClickEvent","btn_locate");
+
                         btnLocate = (Button)findViewById(R.id.btn_locate);
                         btnLocate.setBackgroundResource(R.drawable.button_locate_on);
 
-//                        重新定位
+                        //重新定位
                         LatLng ll = new LatLng(mLocationClient.getLastKnownLocation().getLatitude(),
                                 mLocationClient.getLastKnownLocation().getLongitude());
                         double zoomLevel = mBaiduMap.getMapStatus().zoom;
@@ -164,14 +168,29 @@ public class MainActivity extends AppCompatActivity    {
                         v.startAnimation(locateAnim);
                         break;
 
+                    case R.id.btn_friendList:
+                        Intent friendListIntent = new Intent("start.FriendList");
+                        startActivity(friendListIntent);
+                        break;
+                    case R.id.btn_enemyList:
+                        Intent enemyListIntent = new Intent("start.EnemyList");
+                        startActivity(enemyListIntent);
+                        break;
+
                 }
+
+
 
             }
         };
+        Button btnFriendList = (Button) findViewById(R.id.btn_friendList);
+        Button btnEnemyList = (Button) findViewById(R.id.btn_enemyList);
         btnLocate = (Button) findViewById(R.id.btn_locate);
-        btnLocate.setOnClickListener(btnClickListener);
         btnRefesh = (Button) findViewById(R.id.btn_refresh);
+        btnLocate.setOnClickListener(btnClickListener);
         btnRefesh.setOnClickListener(btnClickListener);
+        btnEnemyList.setOnClickListener(btnClickListener);
+        btnFriendList.setOnClickListener(btnClickListener);
 
     }
 
