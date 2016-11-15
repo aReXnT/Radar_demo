@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_enemy_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context="com.example.arexnt.gpsdemo.EnemyList">
+    <ImageView
+        android:id="@+id/friendListHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/enemies_list_header"/>
+    <Button
+        android:id="@+id/btn_enemyList_add"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="7dp"
+        android:background="@drawable/button_friends_list_add"
+        android:layout_alignLeft="@+id/friendListHeader"/>
+    <Button
+        android:id="@+id/btn_friendList_edit"
+        android:layout_width="40dp"
+        android:layout_height="30dp"
+        android:layout_margin="7dp"
+        android:background="@drawable/button_friends_list_edit"
+        android:layout_alignRight="@+id/friendListHeader"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/friendListHeader"
+        android:layout_above="@id/friendListFooter">
+        <ListView
+            android:id="@+id/friendListView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/friendListHeader">
+
+        </ListView>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/friendListFooter"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/btn_friendListToRadar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_radar"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"/>
+        <Button
+            android:id="@+id/btn_friendListToEnemy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_enemies"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+</RelativeLayout>

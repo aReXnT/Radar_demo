@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity    {
                 isFirstLoc = false;
                 LatLng ll = new LatLng(location.getLatitude(),
                         location.getLongitude());
-                MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll, 16);   //设置地图中心点以及缩放级别
+                MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll, 18);   //设置地图中心点以及缩放级别
                 mBaiduMap.animateMapStatus(u);
             }
         }
@@ -135,9 +135,9 @@ public class MainActivity extends AppCompatActivity    {
                         mBaiduMap.animateMapStatus(u);
 
                         final ImageView locateCover = (ImageView)findViewById(R.id.locateCover);
-                        final Animation locateAnim = new AlphaAnimation(.2f,.8f);
+                        final Animation locateAnim = new AlphaAnimation(1f,.4f);
                         locateAnim.setDuration(1000);
-                        locateAnim.setRepeatCount(3);
+                        locateAnim.setRepeatCount(2);
                         btnLocate.setAnimation(locateAnim);
 
                         locateAnim.setAnimationListener(new Animation.AnimationListener() {
