@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/radar_sweep"
-        android:layout_marginLeft="75dp"
+        android:layout_marginLeft="70dp"
         android:layout_marginTop="125dp"
         android:visibility="invisible"/>
 
