@@ -1,8 +1,8 @@
 package com.example.arexnt.gpsdemo;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
@@ -19,6 +19,7 @@ public class FriendList extends AppCompatActivity implements View.OnClickListene
         btnEnemy.setOnClickListener(this);
         btnAdd.setOnClickListener(this);
 
+
     }
 
     @Override
@@ -34,7 +35,7 @@ public class FriendList extends AppCompatActivity implements View.OnClickListene
                 finish();
                 break;
             case R.id.btn_friendList_add:
-                Intent dialog = new Intent("start.dialogMapView");
+                Intent dialog = new Intent("start.dialogButton");
                 startActivity(dialog);
                 break;
         }

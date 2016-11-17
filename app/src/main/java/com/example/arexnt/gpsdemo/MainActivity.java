@@ -196,8 +196,20 @@ public class MainActivity extends AppCompatActivity    {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         mMapView.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        mMapView.onResume();
+        super.onRestart();
+    }
+
+    @Override
+    protected void onPause() {
+        mMapView.onPause();
+        super.onPause();
     }
 
     private void initLocation(){

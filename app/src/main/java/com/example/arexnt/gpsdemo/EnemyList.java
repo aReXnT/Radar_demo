@@ -32,7 +32,7 @@ public class EnemyList extends AppCompatActivity implements View.OnClickListener
                 finish();
                 break;
             case R.id.btn_enemyList_add:
-                Intent dialog = new Intent("start.dialogMapView");
+                Intent dialog = new Intent("start.dialogButton");
                 startActivity(dialog);
                 break;
         }
