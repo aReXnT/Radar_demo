@@ -36,6 +36,7 @@ public class FriendList extends AppCompatActivity implements View.OnClickListene
                 break;
             case R.id.btn_friendList_add:
                 Intent dialog = new Intent("start.dialogButton");
+                dialog.putExtra("friendly",true);
                 startActivity(dialog);
                 break;
         }

@@ -72,7 +72,7 @@
         </activity>
         <activity
             android:name=".dialogMapView"
-            android:theme="@style/Theme.AppCompat.Light.Dialog">
+            android:theme="@style/myMapDialog">
             <intent-filter>
                 <action android:name="start.dialogMapView"/>
                 <category android:name="android.intent.category.DEFAULT"/>

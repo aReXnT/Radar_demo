@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity    {
             public void onClick(View v) {
                 switch (v.getId()){
                     case R.id.btn_refresh:
-
                         btnRefesh = (Button) findViewById(R.id.btn_refresh);
                         final ImageView scanCover = (ImageView) findViewById(R.id.scanCover);
                         final ImageView radarSweep = (ImageView) findViewById(R.id.radarSweep);

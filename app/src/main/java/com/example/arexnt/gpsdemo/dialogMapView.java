@@ -1,9 +1,18 @@
 package com.example.arexnt.gpsdemo;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -11,19 +20,52 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.core.SearchResult;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 
-public class dialogMapView extends AppCompatActivity implements View.OnClickListener{
+public class dialogMapView extends Activity implements View.OnClickListener {
     MapView mMapView;
     BaiduMap mBaiduMap;
+    private Intent it;
+    private Button btn_dialog_done;
+    private Button btn_dialog_locate;
     public LocationClient mLocationClient = null;
     public MyLocationListenner myListener = new MyLocationListenner();
     boolean isFirstLoc = true;// 是否首次定位
+    private Animation centerAnimation;
+    private ImageView dialogCenterImage;
+    private LatLng mFinalChoosePosition;
+    GeoCoder mSearch = null;
+    public MyGeoCoder mGeoCoder = new MyGeoCoder();
+    public class MyGeoCoder implements OnGetGeoCoderResultListener{
+        @Override
+        public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
+            if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
+                Toast.makeText(dialogMapView.this, "抱歉，未能找到结果", Toast.LENGTH_LONG)
+                        .show();
+                Log.i("RealAddrs","error");
+                return;
+            }
+            Toast.makeText(dialogMapView.this, result.getAddress(),
+                    Toast.LENGTH_LONG).show();
+            Log.i("RealAddrs",result.getAddress());
+        }
 
+        @Override
+        public void onGetGeoCodeResult(GeoCodeResult result) {
+
+        }
+    }
     public class MyLocationListenner implements BDLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
@@ -51,11 +93,16 @@ public class dialogMapView extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("请选择位置");
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_dialog_map_view);
-        Button btn_dialog_done = (Button) findViewById(R.id.dialog_done);
+        //
+        it = getIntent();
+        //设置按钮监听
+        btn_dialog_done = (Button) findViewById(R.id.dialog_done);
+        btn_dialog_locate = (Button) findViewById(R.id.dialog_locate);
         btn_dialog_done.setOnClickListener(this);
+        btn_dialog_locate.setOnClickListener(this);
 
         //开启定位图层
         mMapView = (MapView) findViewById(R.id.dialog_bmapView);
@@ -67,8 +114,62 @@ public class dialogMapView extends AppCompatActivity implements View.OnClickList
         mLocationClient.registerLocationListener(myListener);    //注册监听函数
         this.initLocation();
         mLocationClient.start();
+
+        //监听反地理编码
+        mSearch = GeoCoder.newInstance();
+        mSearch.setOnGetGeoCodeResultListener(mGeoCoder);
+
+        //监听地图移动,获取中心位置
+        dialogCenterImage = (ImageView) findViewById(R.id.dialog_center_image);
+        boolean relation = it.getBooleanExtra("friendly",true);
+        if (relation)
+            dialogCenterImage.setImageResource(R.drawable.friend_marker);
+            else
+            dialogCenterImage.setImageResource(R.drawable.enemy_marker);
+
+        centerAnimation = AnimationUtils.loadAnimation(this, R.anim.center_anim);//钉子动画
+        mBaiduMap.setOnMapStatusChangeListener(new BaiduMap.OnMapStatusChangeListener() {
+            @Override
+            public void onMapStatusChangeStart(MapStatus status) {
+
+            }
+
+            @Override
+            public void onMapStatusChange(MapStatus status) {
+
+            }
+
+            @Override
+            public void onMapStatusChangeFinish(MapStatus status) {
+                dialogCenterImage.startAnimation(centerAnimation);
+                mFinalChoosePosition = status.target;
+                String locationStr = mFinalChoosePosition.toString();
+                Log.i("centerLocation",locationStr);
+
+//                Toast.makeText(dialogMapView.this,locationStr,Toast.LENGTH_SHORT).show();
+                mSearch.reverseGeoCode(new ReverseGeoCodeOption()
+                        .location(mFinalChoosePosition));
+
+                EditText phoneNumber = (EditText) findViewById(R.id.edit_phoneNumber);
+                EditText Lat = (EditText) findViewById(R.id.input_Lat);
+                EditText Lng = (EditText) findViewById(R.id.input_Lng);
+                EditText addrs = (EditText) findViewById(R.id.input_ADDRS);
+
+                Lat.setEnabled(false);
+                Lat.setText(new Double(mFinalChoosePosition.latitude).toString());
+                Lng.setEnabled(false);
+                Lng.setText(new Double(mFinalChoosePosition.longitude).toString());
+                addrs.setEnabled(false);
+
+
+
+            }
+        });
+
+
     }
-    private void initLocation(){
+
+    private void initLocation() {
         LocationClientOption option = new LocationClientOption();
         option.setOpenGps(true); // 打开GPS
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);// 设置定位模式
@@ -81,10 +182,60 @@ public class dialogMapView extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.dialog_done:
                 finish();
                 break;
+            case R.id.dialog_locate:
+                btn_dialog_locate.setBackgroundResource(R.drawable.button_dialog_locating);
+                AlphaAnimation btn_flicker = new AlphaAnimation(0.4f,1f);
+                btn_flicker.setDuration(750);
+                btn_flicker.setRepeatCount(3);
+                btn_flicker.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        btn_dialog_locate.setBackgroundResource(R.drawable.button_dialog_location);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                btn_dialog_locate.startAnimation(btn_flicker);
+
+                LatLng ll = new LatLng(mLocationClient.getLastKnownLocation().getLatitude(),
+                        mLocationClient.getLastKnownLocation().getLongitude());
+                double zoomLevel = mBaiduMap.getMapStatus().zoom;
+                MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll,(float)zoomLevel);
+                mBaiduMap.animateMapStatus(u);
+
+                break;
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        mMapView.onDestroy();
+        mSearch.destroy();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        mMapView.onPause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        mMapView.onResume();
+        super.onResume();
+    }
 }
+

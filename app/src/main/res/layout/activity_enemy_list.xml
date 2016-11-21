@@ -29,11 +29,10 @@
         android:background="@drawable/button_enemies_list_edit"
         android:layout_alignRight="@+id/enemyListHeader"/>
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@+id/enemyListHeader"
         android:layout_above="@+id/enemyListFooter">
-
         <ListView
             android:id="@+id/enemyListView"
             android:layout_width="wrap_content"
@@ -41,6 +40,7 @@
             android:layout_alignBottom="@+id/enemyListHeader">
 
         </ListView>
+
     </LinearLayout>
 
     <RelativeLayout
