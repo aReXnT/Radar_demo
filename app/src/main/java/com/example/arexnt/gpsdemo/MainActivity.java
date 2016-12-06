@@ -1,6 +1,8 @@
 package com.example.arexnt.gpsdemo;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v7.app.AppCompatActivity;
@@ -20,10 +22,13 @@ import com.baidu.location.Poi;
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 
 import java.util.List;
@@ -38,6 +43,7 @@ public class MainActivity extends AppCompatActivity    {
     private Button btnLocate;
     private Button btnRefesh;
 
+
     public MyLocationListenner myListener = new MyLocationListenner();
     boolean isFirstLoc = true;// 是否首次定位
 
@@ -45,7 +51,7 @@ public class MainActivity extends AppCompatActivity    {
         @Override
         public void onReceiveLocation(BDLocation location) {
             //logcat 记录调试信息
-            locateDebug(location);
+//            locateDebug(location);
             //map view 销毁后不在处理新接收的位置
             if (location == null || mMapView == null)
                 return;
@@ -89,6 +95,7 @@ public class MainActivity extends AppCompatActivity    {
             public void onClick(View v) {
                 switch (v.getId()){
                     case R.id.btn_refresh:
+                        mBaiduMap.clear();
                         btnRefesh = (Button) findViewById(R.id.btn_refresh);
                         final ImageView scanCover = (ImageView) findViewById(R.id.scanCover);
                         final ImageView radarSweep = (ImageView) findViewById(R.id.radarSweep);
@@ -123,10 +130,12 @@ public class MainActivity extends AppCompatActivity    {
                             }
                         });
                         v.startAnimation(refreshAnim);
+
+                        //添加maker
+                        readDB();
                         break;
 
                     case R.id.btn_locate:
-
                         btnLocate = (Button)findViewById(R.id.btn_locate);
                         btnLocate.setBackgroundResource(R.drawable.button_locate_on);
 
@@ -165,6 +174,7 @@ public class MainActivity extends AppCompatActivity    {
                             }
                         });
                         v.startAnimation(locateAnim);
+
                         break;
 
                     case R.id.btn_friendList:
@@ -196,6 +206,7 @@ public class MainActivity extends AppCompatActivity    {
     @Override
     protected void onDestroy() {
         mMapView.onDestroy();
+
         super.onDestroy();
     }
 
@@ -281,5 +292,39 @@ public class MainActivity extends AppCompatActivity    {
             }
         }
         Log.i("BaiduLocationApiDem", sb.toString());
+    }
+
+    private void readDB(){
+
+        DataDB mDB = new DataDB(this);
+        SQLiteDatabase mDatabase = mDB.getWritableDatabase();
+        Cursor cursor = mDatabase.query(DataDB.TABLE_NAME,null,null,null,null,null,null);
+        Log.i("selectDB",Integer.toString(cursor.getCount()));
+        while (cursor.moveToNext()){
+            Data mData = new Data();
+            mData.setNUMBER(cursor.getString(cursor.getColumnIndex(DataDB.NUMBER)));
+            mData.setLatitude(cursor.getDouble(cursor.getColumnIndex(DataDB.LATITUDE)));
+            mData.setLongitude(cursor.getDouble(cursor.getColumnIndex(DataDB.LONGITUDE)));
+            int friendly = cursor.getInt(cursor.getColumnIndex(DataDB.Friendly));
+            Log.i("getFriendly",Integer.toString(friendly));
+            if (friendly == 1)
+                mData.setFriendly(true);
+            else
+                mData.setFriendly(false);
+            addMaker(mData);
+        }
+
+    }
+
+    private void addMaker(Data mData){
+        BitmapDescriptor bitmap;
+        if(mData.getFriendly())
+            bitmap = BitmapDescriptorFactory.fromResource(R.drawable.friend_marker);
+        else
+            bitmap = BitmapDescriptorFactory.fromResource(R.drawable.enemy_marker);
+        LatLng latLng = new LatLng(mData.getLatitude(),mData.getLongitude());
+        OverlayOptions option = new MarkerOptions().position(latLng).icon(bitmap);
+        mBaiduMap.addOverlay(option);
+        Log.i("dbLocation",latLng.toString());
     }
 }

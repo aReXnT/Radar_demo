@@ -32,12 +32,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/friendListHeader"
-        android:layout_above="@+id/friendListFooter">
+        android:layout_above="@+id/friendListFooter"
+        android:layout_centerInParent="true">
         <ListView
             android:id="@+id/friendListView"
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/friendListHeader">
+            android:layout_alignBottom="@+id/friendListHeader"
+            android:layout_gravity="center_horizontal|top">
 
         </ListView>
     </LinearLayout>

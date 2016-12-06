@@ -75,6 +75,7 @@
             android:theme="@style/myMapDialog">
             <intent-filter>
                 <action android:name="start.dialogMapView"/>
+
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
@@ -83,8 +84,13 @@
             android:theme="@style/myDialogTheme">
             <intent-filter>
                 <action android:name="start.dialogButton"/>
+
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".EnemyItemDetail">
+        </activity>
+        <activity android:name=".FriendItemDetail">
         </activity>
     </application>
 
