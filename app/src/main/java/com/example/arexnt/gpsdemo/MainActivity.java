@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -33,6 +34,7 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity    {
@@ -40,15 +42,10 @@ public class MainActivity extends AppCompatActivity    {
     BaiduMap mBaiduMap;
     public LocationClient mLocationClient = null;
     BitmapDescriptor mCurrentMarker;
-//    private Intent friendListIntent;
-//    private Intent enemyListIntent;
     private Button btnLocate;
     private Button btnRefesh;
-    private double lat;
-    private double lon;
     private SMSBroadcasReceiver mReceiver;
     private IntentFilter recevieFilter;
-
     public MyLocationListenner myListener = new MyLocationListenner();
     boolean isFirstLoc = true;// 是否首次定位
 
@@ -139,8 +136,9 @@ public class MainActivity extends AppCompatActivity    {
                             }
                         });
                         v.startAnimation(refreshAnim);
-
+                        sendSMS();
                         //添加maker
+
                         readDB();
                         break;
 
@@ -307,6 +305,28 @@ public class MainActivity extends AppCompatActivity    {
         Log.i("BaiduLocationApiDem", sb.toString());
     }
 
+    private void sendSMS(){
+        DataDB mDB = new DataDB(this);
+        SQLiteDatabase mDatabase = mDB.getWritableDatabase();
+        Cursor cursor = mDatabase.rawQuery("select number from data",null);
+        int i = cursor.getCount();
+        Log.i("testsendSMS",Integer.toString(i));
+        while(cursor.moveToNext()){
+            String number = cursor.getString(cursor.getColumnIndex(DataDB.NUMBER));
+            SmsManager manager = SmsManager.getDefault();
+            String sendText = "where are you?";
+            ArrayList<String> list = manager.divideMessage(sendText);
+            for (String text : list) {
+                manager.sendTextMessage(number, null, text, null, null);
+            }
+        }
+        try {
+            Thread.sleep(3 * 1000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
     private void readDB(){
 
         DataDB mDB = new DataDB(this);
@@ -341,19 +361,4 @@ public class MainActivity extends AppCompatActivity    {
         Log.i("dbLocation",latLng.toString());
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
-
-    public void setLon(double lon) {
-        this.lon = lon;
-    }
-
-    public double getLat() {
-        return lat;
-    }
-
-    public double getLon() {
-        return lon;
-    }
 }
