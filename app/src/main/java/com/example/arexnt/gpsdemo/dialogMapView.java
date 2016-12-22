@@ -3,6 +3,7 @@ package com.example.arexnt.gpsdemo;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -207,7 +208,12 @@ public class dialogMapView extends Activity implements View.OnClickListener {
             case R.id.dialog_done:
                 phoneNumber = (EditText) findViewById(R.id.edit_phoneNumber);
                 strPhoneNumber = phoneNumber.getText().toString();
-                addDB();
+                if(!isExist())
+                    addDB();
+                else {
+                    String ToastStr = strPhoneNumber + "已经存在";
+                    Toast.makeText(getApplicationContext(), ToastStr,Toast.LENGTH_SHORT).show();
+                }
 
                 finish();
                 break;
@@ -263,40 +269,6 @@ public class dialogMapView extends Activity implements View.OnClickListener {
         super.onResume();
     }
 
-//    public void addDB() {
-//        Data mData = new Data();
-//        mData.setNUMBER(strPhoneNumber);
-//        mData.setLatitude(mFinalChoosePosition.latitude);
-//        mData.setLongitude(mFinalChoosePosition.longitude);
-//        mData.setADDRS(strAddrs);
-//        boolean relation = it.getBooleanExtra("friendly", true);
-//        mData.setFriendly(relation);
-
-//        //序列化数据
-//        ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
-//        try {
-//            ObjectOutputStream objectOutputStream = new ObjectOutputStream(arrayOutputStream);
-//            objectOutputStream.writeObject(mData);
-//            objectOutputStream.flush();
-//            byte data[] = arrayOutputStream.toByteArray();
-//            objectOutputStream.close();
-//            arrayOutputStream.close();
-//            if(relation){
-//                mDatabase.execSQL("insert into data(friend) values(?)", new Object[]{data});
-//                Log.i("insertData","insert a friend");
-//
-//            }else{
-//                mDatabase.execSQL("insert into data(enemy) values(?)", new Object[]{data});
-//                Log.i("insertData","insert a enemy");
-//            }
-//            mDatabase.close();
-//            Log.i("insert",data.toString());
-//        } catch (Exception e) {
-////             TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-
-//    }
     public void addDB(){
         ContentValues cv = new ContentValues();
         cv.put(DataDB.NUMBER,strPhoneNumber);
@@ -309,5 +281,15 @@ public class dialogMapView extends Activity implements View.OnClickListener {
             cv.put(DataDB.Friendly,0);
         Log.i("insertInfo",cv.toString());
         mDatabase.insert(DataDB.TABLE_NAME,null,cv);
+    }
+    public boolean isExist(){
+        boolean flag = false;
+        Cursor mCursor;
+        mCursor = mDatabase.rawQuery("select * from data where number=?", new String[]{strPhoneNumber});
+        if(mCursor.getCount()==0)
+            flag = false;
+        else
+            flag = true;
+        return flag;
     }
 }

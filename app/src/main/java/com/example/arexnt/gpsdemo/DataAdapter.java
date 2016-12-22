@@ -57,48 +57,4 @@ public class DataAdapter extends BaseAdapter {
     }
 
 
-    //这个版本是用序列化保存数据到数据库
-//    public View getView(int position, View convertView, ViewGroup parent) {
-//        convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item, null);
-//        convertView.findViewById(R.id.list_item_background)
-//                .setBackgroundResource(R.drawable.enemies_list_item_background);
-//        TextView TVnumber = (TextView) convertView.findViewById(R.id.phoneNumber);
-//        mCursor.moveToPosition(position);
-//
-//        //反序列化
-//        Data mData = new Data();
-//        try {
-//            if(friendly){
-//                byte data[] = mCursor.getBlob(mCursor.getColumnIndex("friend"));
-//                ByteArrayInputStream arrayInputStream = new ByteArrayInputStream(data);
-//                ObjectInputStream inputStream = new ObjectInputStream(arrayInputStream);
-//                mData = (Data) inputStream.readObject();
-//                inputStream.close();
-//                arrayInputStream.close();
-//                Log.i("DBdata",mData.getNUMBER());
-//                convertView.findViewById(R.id.list_item_background)
-//                        .setBackgroundResource(R.drawable.friends_list_item_background);
-//                TVnumber.setText(mData.getNUMBER());
-//
-//            }else {
-//                byte data[]= mCursor.getBlob(mCursor.getColumnIndex("enemy"));
-//                ByteArrayInputStream arrayInputStream = new ByteArrayInputStream(data);
-//                ObjectInputStream inputStream = new ObjectInputStream(arrayInputStream);
-//                mData = (Data) inputStream.readObject();
-//                inputStream.close();
-//                arrayInputStream.close();
-//                Log.i("DBdata",mData.getNUMBER());
-//                convertView.findViewById(R.id.list_item_background)
-//                        .setBackgroundResource(R.drawable.enemies_list_item_background);
-//                TVnumber.setText(mData.getNUMBER());
-//            }
-//
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//
-//        return convertView;
-//
-//    }
-
 }

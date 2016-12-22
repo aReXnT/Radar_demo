@@ -105,10 +105,11 @@ public class EnemyList extends AppCompatActivity implements View.OnClickListener
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     mDatabase.delete(DataDB.TABLE_NAME, "_id=" + cursor.getInt(cursor.getColumnIndex(DataDB.ID)), null);
+                    onResume();
                 }
             });
             dialog.show();
-            return false;
+            return true;
         }
     };
 }

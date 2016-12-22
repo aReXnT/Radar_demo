@@ -25,13 +25,12 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.GET_TASKS"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+
 
     <application
         android:allowBackup="true"
@@ -92,6 +91,22 @@
         </activity>
         <activity android:name=".FriendItemDetail">
         </activity>
+        <receiver
+            android:name=".SMSBroadcasReceiver">
+            <intent-filter android:priority="1000">
+                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+            </intent-filter>
+        </receiver>
+        <service android:name=".SendLocateService">
+            <intent-filter>
+                <action android:name="com.arexnt.sendLocateService"/>
+            </intent-filter>
+        </service>
+        <service android:name=".SetLocateService">
+            <intent-filter>
+                <action android:name="com.arexnt.setLocateService"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

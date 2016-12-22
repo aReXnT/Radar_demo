@@ -69,7 +69,8 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:inputType="phone"
-                    android:ems="7"
+                    android:maxLength="11"
+                    android:ems="11"
                       />
             </LinearLayout>
             <LinearLayout
@@ -86,6 +87,7 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:inputType="numberDecimal"
+
                      />
 
             </LinearLayout>

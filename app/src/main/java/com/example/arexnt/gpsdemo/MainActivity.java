@@ -1,6 +1,8 @@
 package com.example.arexnt.gpsdemo;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -42,7 +44,10 @@ public class MainActivity extends AppCompatActivity    {
 //    private Intent enemyListIntent;
     private Button btnLocate;
     private Button btnRefesh;
-
+    private double lat;
+    private double lon;
+    private SMSBroadcasReceiver mReceiver;
+    private IntentFilter recevieFilter;
 
     public MyLocationListenner myListener = new MyLocationListenner();
     boolean isFirstLoc = true;// 是否首次定位
@@ -52,6 +57,10 @@ public class MainActivity extends AppCompatActivity    {
         public void onReceiveLocation(BDLocation location) {
             //logcat 记录调试信息
 //            locateDebug(location);
+            SharedPreferences.Editor editor = getSharedPreferences("location",MODE_PRIVATE).edit();
+            editor.putString("lat",Double.toString(location.getLatitude()));
+            editor.putString("lon",Double.toString(location.getLongitude()));
+            editor.commit();
             //map view 销毁后不在处理新接收的位置
             if (location == null || mMapView == null)
                 return;
@@ -200,14 +209,18 @@ public class MainActivity extends AppCompatActivity    {
         btnRefesh.setOnClickListener(btnClickListener);
         btnEnemyList.setOnClickListener(btnClickListener);
         btnFriendList.setOnClickListener(btnClickListener);
+        recevieFilter = new IntentFilter();
+        recevieFilter.addAction("android.provider.Telephony.SMS_RECEIVED");
+        mReceiver = new SMSBroadcasReceiver();
+        registerReceiver(mReceiver,recevieFilter);
 
     }
 
     @Override
     protected void onDestroy() {
         mMapView.onDestroy();
-
         super.onDestroy();
+        unregisterReceiver(mReceiver);
     }
 
     @Override
@@ -326,5 +339,21 @@ public class MainActivity extends AppCompatActivity    {
         OverlayOptions option = new MarkerOptions().position(latLng).icon(bitmap);
         mBaiduMap.addOverlay(option);
         Log.i("dbLocation",latLng.toString());
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public double getLon() {
+        return lon;
     }
 }
